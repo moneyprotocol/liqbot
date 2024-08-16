@@ -1,0 +1,22 @@
+{
+  "name": "@moneyprotocol/liqbot-contracts",
+  "version": "0.0.0-semantic-release",
+  "description": "Smart contracts of simple liquidation bot for Money Protocol",
+  "keywords": [
+    "Money Protocol",
+    "DeFi",
+    "RSK"
+  ],
+  "homepage": "https://github.com/moneyprotocol/liqbot",
+  "license": "MIT",
+  "scripts": {
+    "build": "hardhat compile",
+    "deploy": "hardhat deploy"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.3",
+    "hardhat": "^2.7.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.3"
+  }
+}
