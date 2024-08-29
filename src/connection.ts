@@ -1,7 +1,11 @@
 import WebSocket from "ws";
 import { providers, Wallet } from "ethers";
-import { BlockPolledMoneypStore, BitcoinsMoneyp, BitcoinsMoneypWithStore } from "@moneyprotocol/lib-ethers";
-import { Batched, WebSocketAugmented } from "@moneyprotocol/providers";
+import {
+  BlockPolledMoneypStore,
+  BitcoinsMoneyp,
+  BitcoinsMoneypWithStore
+} from "@money-protocol/lib-ethers";
+import { Batched, WebSocketAugmented } from "@money-protocol/providers";
 
 import config from "../config.js";
 

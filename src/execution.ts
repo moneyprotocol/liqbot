@@ -25,9 +25,12 @@ import {
   BPD_LIQUIDATION_RESERVE,
   MinedReceipt,
   Vault
-} from "@moneyprotocol/lib-base";
+} from "@money-protocol/lib-base";
 
-import { BlockPolledMoneypStore, PopulatedBitcoinsMoneypTransaction } from "@moneyprotocol/lib-ethers";
+import {
+  BlockPolledMoneypStore,
+  PopulatedBitcoinsMoneypTransaction
+} from "@money-protocol/lib-ethers";
 
 import config from "../config.js";
 import { LiqbotConfig } from "../types/index.js";

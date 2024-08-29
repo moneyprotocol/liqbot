@@ -2,8 +2,8 @@ import assert from "assert";
 
 import chalk from "chalk";
 import { BigNumber } from "ethers";
-import { Decimal } from "@moneyprotocol/lib-base";
-import { BlockPolledMoneypStore, BitcoinsMoneypWithStore } from "@moneyprotocol/lib-ethers";
+import { Decimal } from "@money-protocol/lib-base";
+import { BlockPolledMoneypStore, BitcoinsMoneypWithStore } from "@money-protocol/lib-ethers";
 
 import config from "../config.js";
 import { error, info, success, warn } from "./logging.js";
@@ -70,8 +70,8 @@ export const tryToLiquidate = async (
     info("(σﾟ∀ﾟ)σ Liquidation Raw Populated Tx:");
     info(JSON.stringify(liquidation.rawPopulatedTransaction));
 
-    // liquidation.rawPopulatedTransaction.gas = 
-    // liquidation.rawPopulatedTransaction.gasPrice = 
+    // liquidation.rawPopulatedTransaction.gas =
+    // liquidation.rawPopulatedTransaction.gasPrice =
 
     const expectedCompensation = executor.estimateCompensation(troves, store.state.price);
 
@@ -98,9 +98,9 @@ export const tryToLiquidate = async (
     const { collateralGasCompensation, bpdGasCompensation, liquidatedAddresses, minerCut } =
       receipt.details;
 
-    const gasCost = Decimal.fromBigNumberString(
-      receipt.rawReceipt.gasUsed.toHexString()
-    ).mul(store.state.price);
+    const gasCost = Decimal.fromBigNumberString(receipt.rawReceipt.gasUsed.toHexString()).mul(
+      store.state.price
+    );
 
     const totalCompensation = collateralGasCompensation
       .mul(store.state.price)
@@ -123,4 +123,3 @@ export const tryToLiquidate = async (
     return LiquidationOutcome.FAILURE;
   }
 };
-

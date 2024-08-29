@@ -1,5 +1,5 @@
 {
-  "name": "@moneyprotocol/liqbot",
+  "name": "@money-protocol/liqbot",
   "version": "0.0.0",
   "description": "Simple liquidation bot for Money Protocol",
   "keywords": [
@@ -21,11 +21,11 @@
   },
   "dependencies": {
     "@flashbots/ethers-provider-bundle": "^0.4.2",
-    "@moneyprotocol/lib-base": "5.4.3-stable-testnet",
-    "@moneyprotocol/lib-ethers": "5.4.3-stable-testnet",
-    "@moneyprotocol/providers": "5.4.3-stable-testnet",
+    "@money-protocol/lib-base": "1.0.0-testnet",
+    "@money-protocol/lib-ethers": "1.0.0-testnet",
+    "@money-protocol/providers": "1.0.0-testnet",
     "chalk": "^5.0.0",
-    "ethers": "^5.5.2",
+    "ethers": "5.4.3",
     "ws": "^8.3.0"
   },
   "devDependencies": {
