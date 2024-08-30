@@ -1,4 +1,4 @@
-import { Decimal, MoneypStoreState, Vault, UserVault } from "@moneyprotocol/lib-base";
+import { Decimal, MoneypStoreState, Vault, UserVault } from "@money-protocol/lib-base";
 
 const liquidatableInNormalMode = (state: LiquidationState) => (trove: Vault) =>
   trove.collateralRatioIsBelowMinimum(state.price);

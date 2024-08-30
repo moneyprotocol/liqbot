@@ -1,5 +1,5 @@
-import { MoneypStoreState } from "@moneyprotocol/lib-base";
-import { BlockPolledMoneypStore, BitcoinsMoneypWithStore } from "@moneyprotocol/lib-ethers";
+import { MoneypStoreState } from "@money-protocol/lib-base";
+import { BlockPolledMoneypStore, BitcoinsMoneypWithStore } from "@money-protocol/lib-ethers";
 
 import { connectToLiquity } from "./connection.js";
 import { Executor, getExecutor } from "./execution.js";
@@ -41,7 +41,7 @@ const haveUndercollateralizedTroves = (s: MoneypStoreState) => {
 
   const recoveryMode = s.total.collateralRatioIsBelowCritical(s.price);
   info(`Recovery Mode: ${recoveryMode}`);
-  
+
   const riskiestTrove = s._riskiestVaultBeforeRedistribution.applyRedistribution(
     s.totalRedistributed
   );
@@ -88,4 +88,3 @@ main().catch(err => {
   console.error(err);
   process.exit(1);
 });
-

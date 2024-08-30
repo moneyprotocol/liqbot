@@ -1,5 +1,5 @@
 {
-  "name": "@moneyprotocol/liqbot-contracts",
+  "name": "@money-protocol/liqbot-contracts",
   "version": "0.0.0-semantic-release",
   "description": "Smart contracts of simple liquidation bot for Money Protocol",
   "keywords": [

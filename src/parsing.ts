@@ -1,5 +1,5 @@
 import { utils, providers, BigNumber } from "ethers";
-import { Decimal, LiquidationDetails, Vault } from "@moneyprotocol/lib-base";
+import { Decimal, LiquidationDetails, Vault } from "@money-protocol/lib-base";
 
 // event TroveLiquidated(
 //   address indexed _borrower,
