@@ -5,6 +5,33 @@ import { connectToLiquity } from "./connection.js";
 import { Executor, getExecutor } from "./execution.js";
 import { tryToLiquidate } from "./liquidation.js";
 import { error, info, warn } from "./logging.js";
+import { logShutdown, logStartup } from "./logfile.js";
+
+// Register handlers for termination signals
+process.on("SIGINT", () => {
+  console.log("SIGINT received: Interrupt signal");
+  logShutdown();
+  process.exit(0); // Exit the process gracefully
+});
+
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received: Termination signal");
+  logShutdown();
+  process.exit(0); // Exit the process gracefully
+});
+
+// Optionally, handle uncaught exceptions and unhandled promise rejections
+process.on("uncaughtException", err => {
+  console.error("Uncaught Exception:", err);
+  logShutdown();
+  process.exit(1); // Exit with failure code
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  logShutdown();
+  process.exit(1); // Exit with failure code
+});
 
 const createLiquidationTask = (
   liquity: BitcoinsMoneypWithStore<BlockPolledMoneypStore>,
@@ -58,6 +85,7 @@ const haveUndercollateralizedTroves = (s: MoneypStoreState) => {
 };
 
 const main = async () => {
+  logStartup();
   const liquity = await connectToLiquity();
   const executor = liquity.connection.signer && (await getExecutor(liquity.store));
   const runLiquidationTask = createLiquidationTask(liquity, executor);

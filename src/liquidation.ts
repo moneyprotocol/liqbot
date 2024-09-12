@@ -9,6 +9,7 @@ import config from "../config.js";
 import { error, info, success, warn } from "./logging.js";
 import { Executor } from "./execution.js";
 import { selectForLiquidation } from "./strategy.js";
+import { writeToLogFile } from "./logfile.js";
 
 // About 2M gas required to liquidate 10 Troves (much of it is refunded though).
 const defaultMaxTrovesToLiquidate = 10;
@@ -41,13 +42,15 @@ export const tryToLiquidate = async (
   if (troves.length === 0) {
     // Nothing to liquidate
     info("┐_㋡_┌ There is nothing to liquidate.");
+    writeToLogFile("Trying to liquidate but there is nothing to liquidate.");
     return LiquidationOutcome.NOTHING_TO_LIQUIDATE;
   }
 
   const addresses = troves.map(trove => trove.ownerAddress);
 
   if (!executor) {
-    info(`┐_㋡_┌ Skipping liquidation of ${troves.length} Trove(s) in read-only mode.`);
+    info(`┐_㋡_┌ Skipping liquidation of ${troves.length} Vault(s) in read-only mode.`);
+    writeToLogFile(`Skipping liquidation of ${troves.length} Vault(s) in read-only mode.`);
     return LiquidationOutcome.SKIPPED_IN_READ_ONLY_MODE;
   }
 
@@ -67,8 +70,13 @@ export const tryToLiquidate = async (
     const liquidation = await liquity.populate.liquidate(addresses, { gasLimit });
     assert(liquidation.rawPopulatedTransaction.gasLimit);
 
+    const rawPopulatedTxStr = JSON.stringify(liquidation.rawPopulatedTransaction);
+
     info("(σﾟ∀ﾟ)σ Liquidation Raw Populated Tx:");
-    info(JSON.stringify(liquidation.rawPopulatedTransaction));
+    info(rawPopulatedTxStr);
+
+    writeToLogFile("Liquidation Raw Populated Tx:");
+    writeToLogFile(rawPopulatedTxStr);
 
     // liquidation.rawPopulatedTransaction.gas =
     // liquidation.rawPopulatedTransaction.gasPrice =
@@ -76,20 +84,30 @@ export const tryToLiquidate = async (
     const expectedCompensation = executor.estimateCompensation(troves, store.state.price);
 
     info(
-      `Attempting to liquidate ${troves.length} Trove(s) ` +
+      `Attempting to liquidate ${troves.length} Vault(s) ` +
+        `(expecting $${expectedCompensation.toString(2)} compensation) ...`
+    );
+    writeToLogFile(
+      `Attempting to liquidate ${troves.length} Vault(s) ` +
         `(expecting $${expectedCompensation.toString(2)} compensation) ...`
     );
 
     const receipt = await executor.execute(liquidation);
+    const receiptStr = JSON.stringify(receipt);
 
     info("(σﾟ∀ﾟ)σ Receipt:");
-    info(JSON.stringify(receipt));
+    info(receiptStr);
+
+    writeToLogFile("Receipt:");
+    writeToLogFile(receiptStr);
 
     if (receipt.status === "failed") {
       if (receipt.rawReceipt) {
         error(`(╯°□°）╯ TX ${receipt.rawReceipt.transactionHash} failed.`);
+        writeToLogFile(`TX ${receipt.rawReceipt.transactionHash} failed.`);
       } else {
         warn(`Liquidation TX wasn't included by miners.`);
+        writeToLogFile(`Liquidation TX wasn't included by miners.`);
       }
 
       return LiquidationOutcome.FAILURE;
@@ -113,13 +131,26 @@ export const tryToLiquidate = async (
         (totalCompensation.gte(gasCost)
           ? `${chalk.green(`$${totalCompensation.sub(gasCost).toString(2)}`)} profit`
           : `${chalk.red(`$${gasCost.sub(totalCompensation).toString(2)}`)} loss`) +
-        `) for liquidating ${liquidatedAddresses.length} Trove(s).`
+        `) for liquidating ${liquidatedAddresses.length} Vault(s).`
+    );
+
+    writeToLogFile(
+      `Received ${chalk.bold(`${collateralGasCompensation.toString(4)} RBTC`)} + ` +
+        `${chalk.bold(`${bpdGasCompensation.toString(2)} BPD`)} compensation (` +
+        (totalCompensation.gte(gasCost)
+          ? `${chalk.green(`$${totalCompensation.sub(gasCost).toString(2)}`)} profit`
+          : `${chalk.red(`$${gasCost.sub(totalCompensation).toString(2)}`)} loss`) +
+        `) for liquidating ${liquidatedAddresses.length} Vault(s).`
     );
 
     return LiquidationOutcome.SUCCESS;
-  } catch (err) {
+  } catch (err: any) {
     error("(╯‵□′)╯︵ ┴─┴ Unexpected error:");
     console.error(err);
+
+    writeToLogFile("Unexpected error:");
+    writeToLogFile(err?.toString() || "");
+
     return LiquidationOutcome.FAILURE;
   }
 };
