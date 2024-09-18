@@ -13,6 +13,7 @@
   "scripts": {
     "build": "tsc",
     "build:contracts": "node --loader ts-node/esm scripts/build.ts",
+    "prestart": "mkdir -p logs",
     "start": "node --loader ts-node/esm src/index.ts",
     "deploy": "node --loader ts-node/esm scripts/deploy.ts",
     "postinstall": "run-s postinstall:*",
@@ -30,7 +31,6 @@
   },
   "devDependencies": {
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.12",
     "@types/ws": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
