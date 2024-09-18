@@ -3,4 +3,4 @@ build
 node_modules
 logs
 /config.ts
-nohup.out
+nohup*

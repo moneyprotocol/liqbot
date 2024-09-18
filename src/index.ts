@@ -5,7 +5,7 @@ import { connectToLiquity } from "./connection.js";
 import { Executor, getExecutor } from "./execution.js";
 import { tryToLiquidate } from "./liquidation.js";
 import { error, info, warn } from "./logging.js";
-import { logShutdown, logStartup } from "./logfile.js";
+import { logShutdown, logStartup, writeToLogFile } from "./logfile.js";
 
 // Register handlers for termination signals
 process.on("SIGINT", () => {
@@ -23,14 +23,16 @@ process.on("SIGTERM", () => {
 // Optionally, handle uncaught exceptions and unhandled promise rejections
 process.on("uncaughtException", err => {
   console.error("Uncaught Exception:", err);
-  logShutdown();
-  process.exit(1); // Exit with failure code
+  writeToLogFile(`${err.name}: ${err.message}\nStack Trace:\n${err.stack}\n\n`);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  logShutdown();
-  process.exit(1); // Exit with failure code
+  writeToLogFile(
+    `Unhandled Rejection at: ${promise}\nReason: ${
+      reason instanceof Error ? reason.stack : reason
+    }\n\n`
+  );
 });
 
 const createLiquidationTask = (
